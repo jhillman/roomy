@@ -1,0 +1,40 @@
+{
+  "name": "roomy",
+  "description": "A Room entity generator.  Go to your room.",
+  "version": "0.0.1",
+  "homepage": "https://github.com/jhillman/roomy",
+  "author": {
+    "name": "Jeff Hillman",
+    "email": "jeff.hillman@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jhillman/roomy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jhillman/roomy/issues"
+  },
+  "main": "roomy",
+  "preferGlobal": "true",
+  "bin": {
+    "roomy": "roomy.js"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt": "~0.4.1",
+    "jade": "~0.30.0",
+    "optimist": "~0.5.2",
+    "async": "^0.9.0"
+  },
+  "keywords": [],
+  "dependencies": {
+    "freemarker.js": "^1.3.0",
+    "json-sql": "^0.3.11",
+    "lodash": "^3.5.0"
+  }
+}
