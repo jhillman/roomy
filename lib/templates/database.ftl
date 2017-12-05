@@ -1,36 +1,36 @@
-package ${packageName}.database;
+package ${packageName}.database
 
-import ${packageName}.model.ModelTypeAdapters;
+import ${packageName}.model.ModelTypeAdapters
 
 <#list entityModels as model>
   <#if model.primaryKeyMember??>
-import ${packageName}.model.<#if model.package??>${model.package}.</#if>${model.name};
+import ${packageName}.model.<#if model.package??>${model.package}.</#if>${model.name}
   </#if>
 </#list>
 
 <#list entityModels as model>
   <#if model.primaryKeyMember??>
-import ${packageName}.dao.<#if model.package??>${model.package}.</#if>${model.name}Dao;
+import ${packageName}.dao.<#if model.package??>${model.package}.</#if>${model.name}Dao
   </#if>
 </#list>
  
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverter;
-import android.arch.persistence.room.TypeConverters;
+import android.arch.persistence.room.Database
+import android.arch.persistence.room.RoomDatabase
+import android.arch.persistence.room.TypeConverter
+import android.arch.persistence.room.TypeConverters
  
-@Database(entities={ 
+@Database(entities = arrayOf( 
 <#list entityModels as model>
   <#if model.primaryKeyMember??>
-        ${model.name}.class,
+        ${model.name}::class,
   </#if>
 </#list>
-}, version=1)
-@TypeConverters(ModelTypeAdapters.class)
-public abstract class ${databasePrefix}Database extends RoomDatabase {
+), version = 1)
+@TypeConverters(ModelTypeAdapters::class)
+abstract class ${databasePrefix}Database : RoomDatabase() {
 <#list entityModels as model>
   <#if model.primaryKeyMember??>
-    public abstract ${model.name}Dao ${model.name?uncap_first}Dao();
+    abstract fun ${model.name?uncap_first}Dao() : ${model.name}Dao 
   </#if>
 </#list>
 
