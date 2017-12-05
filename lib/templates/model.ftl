@@ -5,6 +5,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 </#if>
 import android.arch.persistence.room.Embedded;
 <#if parcelable>
@@ -57,6 +58,7 @@ public class ${name}<#if baseClassName??> extends ${baseClassName}</#if><#if par
 <#list members as member>
     <#if member.primaryKey>
     @PrimaryKey
+    @NonNull
     </#if>
     <#if member.ignored>
     @Ignore
