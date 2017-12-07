@@ -7,7 +7,6 @@ import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import android.support.annotation.NonNull
 </#if>
-import android.arch.persistence.room.Embedded
 <#if parcelable>
 
 import android.os.Parcel
@@ -25,30 +24,25 @@ import com.google.gson.stream.JsonWriter
 import com.google.gson.GsonBuilder
 import ${packageName}.model.ModelAdapterFactory
 </#if>
-<#if importLists>
-
-import java.util.ArrayList
-import java.util.List
-</#if>
 <#if importDate>
 
 import java.util.Date
 </#if>
 
-<#list enums + models as import>
+<#list imports as import>
 import ${import}
 </#list>
 
 <#if baseClass??>
 import ${baseClass}
 </#if>
+<#if !imports?seq_contains("org.json.JSONObject")>
 
 import org.json.JSONObject
+</#if>
 
 import java.io.IOException
 import java.io.Serializable
-import java.util.ArrayList
-import java.util.List
   
 <#if primaryKeyMember?? && !noTable>
 @Entity(tableName = "${name?lower_case}")
@@ -96,9 +90,8 @@ class ${name}<#if baseClassName??> : ${baseClassName}()<#elseif parcelable> : </
         ${member.memberName} = parcel.readInt() == 1
 <#elseif member.type == "enum">
 
-        val ${member.memberName}String = parcel.readString()
-        if (${member.memberName}String != null) {
-            ${member.memberName} = ${enumMap[member.class]}.valueOf(${member.memberName}String)
+        parcel.readString()?.let {
+            ${member.memberName} = ${enumMap[member.class]}.valueOf(it)
         }
 
 <#elseif member.type == "byte[]">
@@ -130,13 +123,13 @@ class ${name}<#if baseClassName??> : ${baseClassName}()<#elseif parcelable> : </
 
         val ${member.memberName}Count = parcel.readInt()
         if (${member.memberName}Count >= 0) {
-            ${member.memberName}: ${modelMap[member.name + member.class]}  = new Array${modelMap[member.name + member.class]}()
+            var ${member.memberName} = Array${modelMap[member.name + member.class]}()
             
-            for (int i = 0; i < ${member.memberName}Count; i++) {
-                ${member.memberName}.add((${modelNameMap[member.class]})parcel.readSerializable())
+            for (i in 0 until ${member.memberName}Count) {
+                ${member.memberName}.add(parcel.readSerializable() as ${modelNameMap[member.class]})
             }
 
-            ${member.memberName} = ${member.memberName}
+            this.${member.memberName} = ${member.memberName}
         }
 
     </#if>
@@ -158,7 +151,7 @@ class ${name}<#if baseClassName??> : ${baseClassName}()<#elseif parcelable> : </
 <#if member.type == "boolean">
         parcel.writeInt(if (${member.memberName}) 1 else 0)
 <#elseif member.type == "enum">
-        parcel.writeString(if (${member.memberName} != null) ${member.memberName}.name else null)
+        parcel.writeString(if (${member.memberName} != null) (${member.memberName} as ${enumMap[member.class]}).name else null)
 <#elseif member.type == "byte[]">
 
         if (${member.memberName} != null) {
@@ -190,9 +183,9 @@ class ${name}<#if baseClassName??> : ${baseClassName}()<#elseif parcelable> : </
         if (${member.memberName} == null) {
             parcel.writeInt(-1)
         } else {
-            parcel.writeInt(${member.memberName}.size)
+            parcel.writeInt(${member.memberName}!!.size)
         
-            for (Serializable serializable : ${member.memberName}) {
+            for (serializable in ${member.memberName}!!) {
                 parcel.writeSerializable(serializable)
             }
         }
@@ -212,14 +205,8 @@ ${persistedSection}
 
     class GsonTypeAdapter(gson: Gson) : TypeAdapter<${name}>() {
         <#list types as type>
-        private val ${type.name?uncap_first}Adapter: TypeAdapter<${type.type}> 
+        private val ${type.name?uncap_first}Adapter: TypeAdapter<${type.type}> = gson.getAdapter(<#if type.isList>object : TypeToken<${type.type}>(){}<#else>${type.name}::class.java</#if>)
         </#list>
-
-        init {
-        <#list types as type>
-             ${type.name?uncap_first}Adapter = gson.getAdapter(<#if type.isList>new TypeToken<${type.type}>(){}<#else>${type.name}::class.java</#if>)
-        </#list>
-        }
 
         @Throws(IOException::class)
         override fun read(jsonReader: JsonReader): ${name}? {

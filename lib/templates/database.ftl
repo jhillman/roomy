@@ -21,17 +21,13 @@ import android.arch.persistence.room.TypeConverters
  
 @Database(entities = arrayOf( 
 <#list entityModels as model>
-  <#if model.primaryKeyMember??>
-        ${model.name}::class,
-  </#if>
+        ${model.name}::class<#sep>,</#sep>
 </#list>
 ), version = 1)
 @TypeConverters(ModelTypeAdapters::class)
 abstract class ${databasePrefix}Database : RoomDatabase() {
 <#list entityModels as model>
-  <#if model.primaryKeyMember??>
     abstract fun ${model.name?uncap_first}Dao() : ${model.name}Dao 
-  </#if>
 </#list>
 
     // BEGIN PERSISTED SECTION - put custom methods here

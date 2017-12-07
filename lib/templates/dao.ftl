@@ -7,7 +7,6 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import android.arch.persistence.room.Update
-import java.util.List
 
 import ${packageName}.model.${package}.${name}
 <#list dao.models as import>
