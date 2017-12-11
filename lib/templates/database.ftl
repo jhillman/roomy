@@ -31,5 +31,6 @@ abstract class ${databasePrefix}Database : RoomDatabase() {
 </#list>
 
     // BEGIN PERSISTED SECTION - put custom methods here
+${persistedSection}
     // END PERSISTED SECTION
 }

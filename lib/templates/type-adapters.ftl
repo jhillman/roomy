@@ -55,5 +55,6 @@ class ModelTypeAdapters {
 </#list>
 
     // BEGIN PERSISTED SECTION - put custom methods here
+${persistedSection}
     // END PERSISTED SECTION
 }

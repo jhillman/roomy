@@ -253,9 +253,9 @@ ${persistedSection}
             ${member.adapterType?uncap_first}Adapter.write(jsonWriter, ${name?uncap_first}.${member.memberName})
 
             <#else> 
-            if (${name?uncap_first}.${member.memberName} != null) {
+            ${name?uncap_first}.${member.memberName}?.let {
                 jsonWriter.name("${member.serializedName!member.name}")
-                ${member.adapterType?uncap_first}Adapter.write(jsonWriter, ${name?uncap_first}.${member.memberName})
+                ${member.adapterType?uncap_first}Adapter.write(jsonWriter, it)
             }
             
             </#if>
