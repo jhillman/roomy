@@ -73,7 +73,7 @@ class ${name}<#if baseClassName??> : ${baseClassName}()<#elseif parcelable> : </
     <#if primaryKeyMember?? && !noTable>
     @Ignore
     </#if>
-    constructor(${constructor.members[0].memberName}: ${constructor.members[0].memberType?cap_first}<#list constructor.members[1..] as member>, ${member.memberName}: ${member.memberType?cap_first}</#list>) {
+    constructor(${constructor.members[0].memberName}: ${constructor.members[0].memberType?cap_first}<#if constructor.members[0].nullable>?</#if><#list constructor.members[1..] as member>, ${member.memberName}: ${member.memberType?cap_first}<#if member.nullable>?</#if></#list>) {
 <#list constructor.members as member>
         this.${member.memberName} = ${member.memberName}
 </#list>
@@ -268,6 +268,7 @@ ${persistedSection}
 <#if parcelable>
 
     companion object {
+        @JvmField
         val CREATOR: Parcelable.Creator<${name}> = object : Parcelable.Creator<${name}> {
             override fun createFromParcel(parcel: Parcel) : ${name} {
                 return ${name}(parcel)
