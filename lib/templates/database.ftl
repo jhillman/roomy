@@ -30,6 +30,12 @@ abstract class ${databasePrefix}Database : RoomDatabase() {
     abstract fun ${model.name?uncap_first}Dao() : ${model.name}Dao 
 </#list>
 
+    fun deleteAll() {
+<#list entityModels as model>
+        ${model.name?uncap_first}Dao().deleteAll()
+</#list>
+    }
+
     // BEGIN PERSISTED SECTION - put custom methods here
 ${persistedSection}
     // END PERSISTED SECTION
