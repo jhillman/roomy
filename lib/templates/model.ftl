@@ -47,7 +47,7 @@ import java.io.Serializable
 <#if primaryKeyMember?? && !noTable>
 @Entity(tableName = "${name?lower_case}")
 </#if>
-class ${name}<#if baseClassName??> : ${baseClassName}()<#elseif parcelable> : </#if><#if parcelable>Parcelable</#if> {
+<#if open>open </#if>class ${name}<#if baseClassName??> : ${baseClassName}<#elseif parcelable> : </#if><#if parcelable><#if baseClassName??>, </#if>Parcelable</#if> {
 <#list members as member>
     <#if member.primaryKey>
     @PrimaryKey
@@ -236,6 +236,10 @@ ${persistedSection}
                 }
 
                 jsonReader.endObject()
+                <#if customGson>
+
+                json${name}.handleCustomGson(this)
+                </#if>
             }
 
             return json${name}

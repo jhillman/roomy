@@ -21,8 +21,11 @@ interface ${name}Dao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(${name?uncap_first}List: List<${name}>): List<Long>
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
+    @Update
     fun update(${name?uncap_first}: ${name}): Int
+
+    @Update
+    fun update(${name?uncap_first}List: List<${name}>): Int
 
     @Delete
     fun delete(${name?uncap_first}: ${name}): Int
