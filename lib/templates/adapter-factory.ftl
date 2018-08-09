@@ -5,6 +5,11 @@ import com.google.gson.TypeAdapterFactory
 import com.google.gson.TypeAdapter
 import com.google.gson.reflect.TypeToken
  
+/**
+* AUTO-GENERATED CLASS.
+* Make changes in <code>room.json</code> or use <code>PERSISTED SECTION</code> below
+*/
+
 object ModelAdapterFactory {
     @Suppress("UNCHECKED_CAST")
     fun create(): TypeAdapterFactory {
