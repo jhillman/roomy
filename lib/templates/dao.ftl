@@ -12,6 +12,11 @@ import ${packageName}.model.${package}.${name}
 <#list dao.models as import>
 import ${import}
 </#list>
+
+/**
+* AUTO-GENERATED CLASS.
+* Make changes in <code>room.json</code> or use <code>PERSISTED SECTION</code> below
+*/
  
 @Dao
 interface ${name}Dao {

@@ -13,6 +13,11 @@ import ${model.fullPackageName}
 <#list types.enums as enum> 
 import ${enum.class}
 </#list>
+
+/**
+* AUTO-GENERATED CLASS.
+* Make changes in <code>room.json</code> or use <code>PERSISTED SECTION</code> below
+*/
  
 @Suppress("UNCHECKED_CAST")
 class ModelTypeAdapters {

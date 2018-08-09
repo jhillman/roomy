@@ -18,12 +18,17 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverter
 import android.arch.persistence.room.TypeConverters
+
+/**
+* AUTO-GENERATED CLASS.
+* Make changes in <code>room.json</code> or use <code>PERSISTED SECTION</code> below
+*/
  
 @Database(entities = arrayOf( 
 <#list entityModels as model>
         ${model.name}::class<#sep>,</#sep>
 </#list>
-), version = 1)
+), version = ${databaseVersion})
 @TypeConverters(ModelTypeAdapters::class)
 abstract class ${databasePrefix}Database : RoomDatabase() {
 <#list entityModels as model>

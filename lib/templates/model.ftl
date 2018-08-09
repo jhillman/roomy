@@ -44,6 +44,11 @@ import org.json.JSONObject
 import java.io.IOException
 import java.io.Serializable
   
+/**
+* AUTO-GENERATED CLASS.
+* Make changes in <code>room.json</code> or use <code>PERSISTED SECTION</code> below
+*/
+
 <#if primaryKeyMember?? && !noTable>
 @Entity(tableName = "${name?lower_case}")
 </#if>
@@ -68,7 +73,7 @@ import java.io.Serializable
     @Transient
     </#if>
     var ${member.memberName}: ${member.memberType?cap_first}<#if member.nullable>?</#if> = ${member.default}
-    
+
 </#list>
 
     constructor()
