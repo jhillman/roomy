@@ -23,7 +23,7 @@ import android.arch.persistence.room.TypeConverters
 <#list entityModels as model>
         ${model.name}::class<#sep>,</#sep>
 </#list>
-), version = 1)
+), version = ${databaseVersion})
 @TypeConverters(ModelTypeAdapters::class)
 abstract class ${databasePrefix}Database : RoomDatabase() {
 <#list entityModels as model>
