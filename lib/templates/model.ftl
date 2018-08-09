@@ -68,6 +68,7 @@ import java.io.Serializable
     @Transient
     </#if>
     var ${member.memberName}: ${member.memberType?cap_first}<#if member.nullable>?</#if> = ${member.default}
+    
 </#list>
 
     constructor()
