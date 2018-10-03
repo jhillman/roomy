@@ -30,6 +30,16 @@ function processData(destination, data) {
     data.relationships = [];
   }
 
+  if (data.modelFiles) {
+    if (!data.models) {
+      data.models = [];
+    }
+
+    data.modelFiles.forEach(function (modelFile) {
+      data.models = data.models.concat(require(process.cwd() + '/' + modelFile));
+    });
+  }
+
   roomy.generate(destination, data, function(err) {
     if (err) return console.log('roomy error: ' + err);
 
