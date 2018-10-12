@@ -54,7 +54,7 @@ class ModelTypeAdapters {
     }
 
     @TypeConverter
-    fun to${enum.name}List(${enum.name?uncap_first}String: String?): ${enum.name}? {
+    fun to${enum.name}(${enum.name?uncap_first}String: String?): ${enum.name}? {
         ${enum.name?uncap_first}String?.let {
             return ${enum.name}.valueOf(it)
         }
