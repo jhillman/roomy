@@ -14,10 +14,9 @@ import ${packageName}.dao.<#if model.package??>${model.package}.</#if>${model.na
   </#if>
 </#list>
  
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
-import android.arch.persistence.room.TypeConverter
-import android.arch.persistence.room.TypeConverters
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 /**
 * AUTO-GENERATED CLASS.
