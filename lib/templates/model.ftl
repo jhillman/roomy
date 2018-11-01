@@ -72,7 +72,15 @@ import java.io.Serializable
     <#if member.noGson??>
     @Transient
     </#if>
-    var ${member.memberName}: ${member.memberType?cap_first}<#if member.nullable>?</#if> = ${member.default}
+    <#if member.nonNull && (member.isPrimitive || member.type == 'enum') && member.type != 'class[]'>
+    var ${member.memberName}: ${member.memberType?cap_first} = ${member.default}
+    <#elseif !member.nonNull && member.isPrimitive && member.type != 'class[]'>
+    var ${member.memberName}: ${member.memberType?cap_first}? = null
+    <#elseif member.nonNull && !member.isPrimitive && member.type != 'class[]'>
+    lateinit var ${member.memberName}: ${member.memberType?cap_first}
+    <#else>
+    var ${member.memberName}: ${member.memberType?cap_first}? = <#if member.type != 'class[]'>${member.default}<#else>null</#if>
+    </#if>
 
 </#list>
 
@@ -82,7 +90,7 @@ import java.io.Serializable
     <#if primaryKeyMember?? && !noTable>
     @Ignore
     </#if>
-    constructor(${constructor.members[0].memberName}: ${constructor.members[0].memberType?cap_first}<#if constructor.members[0].nullable>?</#if><#list constructor.members[1..] as member>, ${member.memberName}: ${member.memberType?cap_first}<#if member.nullable>?</#if></#list>) {
+    constructor(${constructor.members[0].memberName}: ${constructor.members[0].memberType?cap_first}<#if !constructor.members[0].nonNull>?</#if><#list constructor.members[1..] as member>, ${member.memberName}: ${member.memberType?cap_first}<#if !member.nonNull || (member.isPrimitive && member.type == 'class[]')>?</#if></#list>) {
 <#list constructor.members as member>
         this.${member.memberName} = ${member.memberName}
 </#list>
@@ -95,35 +103,44 @@ import java.io.Serializable
     </#if>
     constructor(parcel: Parcel)<#if baseClassName??> : super(parcel)</#if> {
 <#list members as member>
-<#if member.type == "boolean">
-        ${member.memberName} = parcel.readInt() == 1
-<#elseif member.type == "enum">
-
+<#if member.type == "enum">
         parcel.readString()?.let {
             ${member.memberName} = ${enumMap[member.class]}.valueOf(it)
         }
-
 <#elseif member.type == "byte[]">
-
         val ${member.memberName}Length = parcel.readInt()
         if (${member.memberName}Length >= 0) {
             byte[] ${member.memberName} = new byte[${member.memberName}Length]
             parcel.readByteArray(${member.memberName})
             ${member.memberName} = ${member.memberName}
         }
-
 <#elseif member.type == "Date">
-
         ${member.memberName}Time: long = parcel.readLong()
         if (${member.memberName}Time >= 0) {
             ${member.memberName} = Date(${member.memberName}Time)
         }
-
 <#elseif member.type == "class">
-    <#if member.parcelable??>
+    <#if member.isPrimitive && member.nonNull>
+        <#if member.class == "kotlin.Boolean">
+        ${member.memberName} = parcel.readInt() == 1
+        <#elseif member.class == "kotlin.Long">
+        ${member.memberName} = parcel.readLong()
+        <#elseif member.class == "kotlin.Int">
+        ${member.memberName} = parcel.readInt()
+        <#elseif member.class == "kotlin.Double">
+        ${member.memberName} = parcel.readDouble()
+        <#elseif member.class == "kotlin.Float">
+        ${member.memberName} = parcel.readFloat()
+        </#if>
+    <#elseif member.isPrimitive>
+        ${member.memberName} = parcel.readSerializable() as ${modelNameMap[member.class]}?
+    </#if>
+    <#if member.class == "kotlin.String">
+        ${member.memberName} = parcel.readString()
+    <#elseif member.parcelable??>
         ${member.memberName} = parcel.readParcelable(${modelMap[member.name + member.class]}::class.java.classLoader)
     <#elseif member.serializable??>
-        ${member.memberName} = parcel.readSerializable() as ${modelMap[member.name + member.class]}<#if member.nullable>?</#if>
+        ${member.memberName} = parcel.readSerializable() as ${modelMap[member.name + member.class]}<#if !member.nonNull>?</#if>
     </#if>
 <#elseif member.type == "class[]">
     <#if member.parcelable??>
@@ -157,29 +174,40 @@ import java.io.Serializable
         super.writeToParcel(parcel, flags)
 </#if>
 <#list members as member>
-<#if member.type == "boolean">
-        parcel.writeInt(if (${member.memberName}) 1 else 0)
-<#elseif member.type == "enum">
+<#if member.type == "enum">
         parcel.writeString(if (${member.memberName} != null) (${member.memberName} as ${enumMap[member.class]}).name else null)
 <#elseif member.type == "byte[]">
-
         if (${member.memberName} != null) {
             parcel.writeInt(${member.memberName}.length)
             parcel.writeByteArray(${member.memberName})
         } else {
             parcel.writeInt(-1)
         }
-
 <#elseif member.type == "Date">
-
         if (${member.memberName} != null) {
             parcel.writeLong(${member.memberName}.getTime())
         } else {
             parcel.writeInt(-1)
         }
-
 <#elseif member.type == "class">
-    <#if member.parcelable??>
+    <#if member.isPrimitive && member.nonNull>
+        <#if member.class == "kotlin.Boolean">
+        parcel.writeInt(if (${member.memberName}) 1 else 0)
+        <#elseif member.class == "kotlin.Long">
+        parcel.writeLong(${member.memberName})
+        <#elseif member.class == "kotlin.Int">
+        parcel.writeInt(${member.memberName})
+        <#elseif member.class == "kotlin.Double">
+        parcel.writeDouble(${member.memberName})
+        <#elseif member.class == "kotlin.Float">
+        parcel.writeFloat(${member.memberName})
+        </#if>
+    <#elseif member.isPrimitive>
+        parcel.writeSerializable(${member.memberName})
+    </#if>
+    <#if member.class == "kotlin.String">
+        parcel.writeString(${member.memberName})
+    <#elseif member.parcelable??>
         parcel.writeParcelable(${member.memberName}, flags)
     <#elseif member.serializable??>
         parcel.writeSerializable(${member.memberName})
