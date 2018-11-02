@@ -11,7 +11,7 @@ var fs              = require('fs'),
     data,
     usage;
 
-function processData(destination, data) {
+function processData(destination, data, force) {
   var dataJson;
 
   if (argv.data) {
@@ -40,7 +40,7 @@ function processData(destination, data) {
     });
   }
 
-  roomy.generate(destination, data, function(err) {
+  roomy.generate(destination, data, force, function(err) {
     if (err) return console.log('roomy error: ' + err);
 
     console.log('roomy has completed successfully!');
@@ -54,6 +54,8 @@ usage = function() {
               '  roomy --path <relative path to room config file>\n\n' +
               'You may also provide the destination directory as an argument:\n' +
               '  roomy --dest <relative path to the destination directory>\n\n' +
+              'To do a complete refresh without checking model hashes:\n' +
+              '  roomy --force\n\n' +
               'Finally, you may also override or provide additional template \n' +
               'data with the data parameter:\n' +
               '  roomy --data \'{"packageName": "com.something.great"}\'\n'+
@@ -73,7 +75,7 @@ fs.exists(roomConfig, function(exists) {
   if (exists) {
     data = require(roomConfig);
 
-    processData(destinationPath, data);
+    processData(destinationPath, data, argv.force);
   } else {
     usage();
   }
