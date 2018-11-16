@@ -291,6 +291,8 @@ ${persistedSection}
 
                 json${name}.handleCustomGson(this)
                 </#if>
+            } else {
+                jsonReader.nextNull()
             }
 
             return json${name}
