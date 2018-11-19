@@ -45,7 +45,7 @@ interface ${name}Dao {
     fun get${name}By${primaryKeyMember.memberName?cap_first}(${primaryKeyMember.memberName}: ${primaryKeyMember.memberType?cap_first}): LiveData<${name}>
 
     @Query("SELECT * FROM `${name?lower_case}` WHERE `${primaryKeyMember.name}` = :${primaryKeyMember.memberName}")
-    fun get${name}By${primaryKeyMember.memberName?cap_first}Sync(${primaryKeyMember.memberName}: ${primaryKeyMember.memberType?cap_first}): ${name}
+    fun get${name}By${primaryKeyMember.memberName?cap_first}Sync(${primaryKeyMember.memberName}: ${primaryKeyMember.memberType?cap_first}): ${name}?
     <#list dao.queries as query>
 
     @Query("${query.sql}")
