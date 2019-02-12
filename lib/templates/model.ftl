@@ -1,11 +1,11 @@
 package ${packageName}.model<#if package??>.${package}</#if>
 
 <#if primaryKeyMember??>
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.Ignore
-import android.arch.persistence.room.PrimaryKey
-import android.support.annotation.NonNull
+import androidx.annotation.NonNull
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 </#if>
 <#if parcelable>
 
@@ -310,7 +310,7 @@ ${persistedSection}
             ${member.adapterType?uncap_first}Adapter.write(jsonWriter, ${name?uncap_first}.${member.memberName})
 
             <#else> 
-            ${name?uncap_first}.${member.memberName}?.let {
+            ${name?uncap_first}.${member.memberName}<#if !member.nonNull>?</#if>.let {
                 jsonWriter.name("${member.serializedName!member.name}")
                 ${member.adapterType?uncap_first}Adapter.write(jsonWriter, it)
             }
