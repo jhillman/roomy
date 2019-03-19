@@ -1,5 +1,8 @@
 package ${packageName}.database
 
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import ${packageName}.model.ModelTypeAdapters
 
 <#list entityModels as model>
@@ -13,11 +16,6 @@ import ${packageName}.model.<#if model.package??>${model.package}.</#if>${model.
 import ${packageName}.dao.<#if model.package??>${model.package}.</#if>${model.name}Dao
   </#if>
 </#list>
- 
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
-import android.arch.persistence.room.TypeConverter
-import android.arch.persistence.room.TypeConverters
 
 /**
 * AUTO-GENERATED CLASS.
