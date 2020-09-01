@@ -84,7 +84,9 @@ import java.io.Serializable
 
 </#list>
 
+    <#if !noDefaultConstructor>
     constructor()
+    </#if>
 <#list constructors as constructor>
 
     <#if primaryKeyMember?? && !noTable>
@@ -136,7 +138,7 @@ import java.io.Serializable
         ${member.memberName} = parcel.readSerializable() as ${modelNameMap[member.class]}?
     </#if>
     <#if member.class == "kotlin.String">
-        ${member.memberName} = parcel.readString()
+        ${member.memberName} = parcel.readString() <#if member.nonNull>?: ""</#if>
     <#elseif member.parcelable??>
         ${member.memberName} = parcel.readParcelable(${modelMap[member.name + member.class]}::class.java.classLoader)
     <#elseif member.serializable??>
