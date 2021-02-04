@@ -1,6 +1,7 @@
 package ${packageName}.dao.${package}
 
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 import androidx.room.*
 import ${packageName}.model.${package}.${name}
 <#list dao.models as import>
@@ -62,6 +63,9 @@ interface ${name}Dao {
     @Query("SELECT * FROM `${name?lower_case}`<#if dao.orderBy??> ORDER BY `${dao.orderBy}`<#if dao.orderByDirection??> ${dao.orderByDirection}</#if></#if>")
     suspend fun allAsync(): List<${name}>
 
+    @get:Query("SELECT * FROM `${name?lower_case}`<#if dao.orderBy??> ORDER BY `${dao.orderBy}`<#if dao.orderByDirection??> ${dao.orderByDirection}</#if></#if>")
+    val allFlow: Flow<List<${name}>>
+
     @Query("SELECT * FROM `${name?lower_case}` WHERE `${primaryKeyMember.name}` = :${primaryKeyMember.memberName}")
     fun get${name}By${primaryKeyMember.memberName?cap_first}(${primaryKeyMember.memberName}: ${primaryKeyMember.memberType?cap_first}): LiveData<${name}>
 
@@ -78,6 +82,18 @@ interface ${name}Dao {
     @Query("${query.sql}")
     suspend fun ${query.name}Async(${query.params[0].name}: ${query.params[0].type?cap_first}<#list query.params[1..] as member>, ${member.name}: ${member.type?cap_first}</#list>): ${query.returnType}
     </#list>
+
+    @Transaction
+    suspend fun deleteAndInsert(items: List<${name}>) {
+        deleteAllAsync()
+        insertAsync(items)
+    }
+    
+    @Transaction
+    suspend fun deleteAndInsert(item: ${name}) {
+        deleteAllAsync()
+        insertAsync(item)
+    }
 
     // BEGIN PERSISTED SECTION - put custom methods here
 ${persistedSection}

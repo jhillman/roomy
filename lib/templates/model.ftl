@@ -43,6 +43,7 @@ import org.json.JSONObject
 
 import java.io.IOException
 import java.io.Serializable
+import kotlin.jvm.Throws
   
 /**
 * AUTO-GENERATED CLASS.
