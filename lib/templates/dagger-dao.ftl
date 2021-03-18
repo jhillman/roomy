@@ -1,6 +1,5 @@
 package com.chatbooks.injection
 
-import com.chatbooks.Chatbooks
 <#list entityModels as model>
   <#if model.primaryKeyMember??>
 import ${packageName}.dao.<#if model.package??>${model.package}.</#if>${model.name}Dao
@@ -10,6 +9,8 @@ import ${packageName}.database.${databasePrefix}Database
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
 /**
 * AUTO-GENERATED CLASS.
@@ -17,6 +18,7 @@ import javax.inject.Singleton
 */
  
 @Module
+@InstallIn(SingletonComponent::class)
 class DaggerDaoModule {
 
   <#list entityModels as model>
